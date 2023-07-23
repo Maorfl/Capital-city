@@ -56,7 +56,6 @@
                         <p><b>Min-temp: </b>${(Number(weatherApiResult.data.main.temp_min) - 273.15).toFixed(2)}C</p>
                         <p><b>Pressure: </b>${weatherApiResult.data.main.pressure}</p>
                         <p><b>Humidity: </b>${weatherApiResult.data.main.humidity}</p>
-                        <p><b>Sea level: </b>${weatherApiResult.data.main.sea_level ? weatherApiResult.data.main.sea_level : "No sea in the city"}</p>
                     </div>
                     <div class="col-md-3">
                         <iframe
