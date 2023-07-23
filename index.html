@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+        integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Capital city API</title>
+</head>
+
+<body>
+    <h1 class="text-center">Capital city Search</h1>
+    <h3 class="text-center">Here you can search information about capital cities</h3>
+    <div class="container d-flex justify-content-center mt-5">
+        <input class="form-control w-50" type="text" placeholder="Enter capital city" aria-label="default input example"
+            id="capitalCity">
+        <button class="btn btn-light border border-1 border-black ms-1" type="submit"
+            onclick="getCountry()">Search</button>
+    </div>
+    <div class="container text-center mt-5" id="contant"></div>
+
+
+    <script>
+        async function getCountry() {
+            try {
+                let detailsCityResult;
+                let capitalCity = (document.getElementById("capitalCity").value).toLowerCase();
+                let weatherApiDetails = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${capitalCity}&limit=5&appid=b4b34d3b5e77a01e0da9af837a183738`);
+                let weatherApiResult = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${weatherApiDetails.data[0].lat}&lon=${weatherApiDetails.data[0].lon}&appid=b4b34d3b5e77a01e0da9af837a183738`);
+                capitalCity == "jerusalem" ? detailsCityResult = await axios.get("https://restcountries.com/v3.1/name/israel")
+                    : detailsCityResult = await axios.get(`https://restcountries.com/v3.1/capital/${capitalCity}`);
+                document.getElementById("contant").innerHTML = `
+                <div class="row">
+                    <div class="col-md-3 bg-body-secondary p-3 me-2">
+                        <img src="${detailsCityResult.data[0].flags.png}" class="img-fluid mb-2" alt="${detailsCityResult.data[0].flags.alt}">
+                        <h2 class="mb-2">${detailsCityResult.data[0].name.common}</h2>
+                        <p><b>Population: </b>${(Number(detailsCityResult.data[0].population)).toLocaleString("en-US")}</p>
+                        <p><b>Region: </b>${detailsCityResult.data[0].region}</p>
+                        <p><b>Languages: </b>${Object.values(detailsCityResult.data[0].languages)}</p>
+                    </div>
+                    <div class="col-md-3 bg-info p-1">
+                        <h2>Weather:</h2>
+                        <p><b>Main: </b>${weatherApiResult.data.weather[0].main}</p>
+                        <p><b>Description: </b>${weatherApiResult.data.weather[0].description}</p>
+                        <p><b>Temp: </b>${(Number(weatherApiResult.data.main.temp) - 273.15).toFixed(2)}C</p>
+                        <p><b>Feels like: </b>${(Number(weatherApiResult.data.main.feels_like) - 273.15).toFixed(2)}C</p>
+                        <p><b>Max-temp: </b>${(Number(weatherApiResult.data.main.temp_max) - 273.15).toFixed(2)}C</p>
+                        <p><b>Min-temp: </b>${(Number(weatherApiResult.data.main.temp_min) - 273.15).toFixed(2)}C</p>
+                        <p><b>Pressure: </b>${weatherApiResult.data.main.pressure}</p>
+                        <p><b>Humidity: </b>${weatherApiResult.data.main.humidity}</p>
+                        <p><b>Sea level: </b>${weatherApiResult.data.main.sea_level ? weatherApiResult.data.main.sea_level : "No sea in the city"}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <iframe
+                            width="600"
+                            height="450"
+                            style="border:0"
+                            loading="lazy"
+                            allowfullscreen
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDpAJ0bXQXZAA_43355PXchAjrzEwCAhyk&q=${capitalCity}">
+                        </iframe>
+                    </div>
+                </div>
+                `;
+            } catch (error) {
+                error = "Not Found";
+                alert(error);
+            }
+        }
+    </script>
+</body>
+
+</html>
