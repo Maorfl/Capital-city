@@ -33,7 +33,7 @@
             try {
                 let detailsCityResult;
                 let capitalCity = (document.getElementById("capitalCity").value).toLowerCase();
-                let weatherApiDetails = await axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${capitalCity}&limit=5&appid=b4b34d3b5e77a01e0da9af837a183738`);
+                let weatherApiDetails = await axios.get(`https://api.openweathermap.org/geo/1.0/direct?q=${capitalCity}&limit=5&appid=b4b34d3b5e77a01e0da9af837a183738`);
                 let weatherApiResult = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${weatherApiDetails.data[0].lat}&lon=${weatherApiDetails.data[0].lon}&appid=b4b34d3b5e77a01e0da9af837a183738`);
                 capitalCity == "jerusalem" ? detailsCityResult = await axios.get("https://restcountries.com/v3.1/name/israel")
                     : detailsCityResult = await axios.get(`https://restcountries.com/v3.1/capital/${capitalCity}`);
